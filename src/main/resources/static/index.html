@@ -34,7 +34,7 @@
             <h3>{{ category.title }}</h3>
             <img :src="category.image" alt="分类图片">
             <p>{{ category.description }}</p>
-            <el-button type="success" @click="viewCategory(category.title)">查看</el-button>
+            <el-button type="success" @click="viewCategory(category.key)">查看</el-button>
         </div>
     </div>
 </div>
