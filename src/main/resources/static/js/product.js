@@ -86,6 +86,16 @@ const app = createApp({
         buyNow() {
             alert('立即购买: ' + this.product.name);
             // 执行立即购买逻辑
+            // axios.post("/api/login", { username, password })
+            //     .then(response => {
+            //         alert(response.data.message); // 提示登录信息
+            //         if (response.data.status === "success") {
+            //             window.location.href = "/index.html"; // 跳转到主页
+            //         }
+            //     })
+            //     .catch(error => {
+            //         console.error("请求失败", error);
+            //     });
         },
         goToCart() {
             alert('跳转到购物车');

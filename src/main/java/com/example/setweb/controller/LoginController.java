@@ -1,5 +1,6 @@
 package com.example.setweb.controller;
 
+import com.example.setweb.dao.User;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
@@ -37,9 +38,9 @@ public class LoginController {
         if (USER_DB.containsKey(username) && USER_DB.get(username).equals(password)) {
             response.put("status", "success");
             response.put("message", "登录成功");
-
+            User loginUser = new User(username, password);
             // 使用Session存储登录信息
-            session.setAttribute("user", username);
+            session.setAttribute("user", loginUser.toString());
             logger.info(username + "登录成功");
         } else {
             response.put("status", "error");
