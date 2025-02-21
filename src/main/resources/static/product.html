@@ -8,53 +8,83 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/element-plus"></script>
   <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
-  <link rel="stylesheet" href="css/product.css"> <!-- 引用外部CSS文件 -->
+  <link rel="stylesheet" href="css/product.css">
 </head>
 
 <body>
-<!-- 顶部导航栏 -->
-<div class="header">
-  <h2 class="title">安全电子商务平台</h2>
+<!-- Vue 挂载点 -->
+<div id="app">
+  <!-- 顶部导航栏 -->
+  <div class="header">
+    <h2 class="title">安全电子商务平台</h2>
+    <el-input v-model="searchQuery" placeholder="搜索商品..." class="search-bar"></el-input>
+    <el-button type="primary" @click="searchProduct">搜索</el-button>
+    <el-button class="cart-button" @click="goToCart">购物车({{cart.length}})</el-button>
+  </div>
 
-  <!-- 使用 Element Plus 的 el-input 组件 -->
-<!--  <el-input v-model="searchQuery" placeholder="搜索商品..." class="search-bar"></el-input>-->
-  <input v-model="searchQuery" placeholder="搜索商品..." class="p-2 rounded text-black w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
+  <div class="content-container">
+    <div class="flex flex-col md:flex-row gap-8">
+      <!-- 商品图片 -->
+      <div class="image-container">
+        <img :src="product.image" alt="商品图片" class="product-image" loading="lazy">
+      </div>
 
+      <!-- 商品详情 -->
+      <div class="details-container">
+        <h1 class="product-name">{{ product.name }}</h1>
+        <p class="product-description">{{ product.description }}</p>
+        <p class="extended-description">{{ product.extendedDescription }}</p>
+        <p class="price">价格: ￥{{ product.price }}</p>
 
-  <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">搜索</button>
-  <el-button class="cart-button" @click="goToCart">
-    购物车
-<!--    ({{ cart.length }})-->
-  </el-button>
-</div>
-
-<div id="app" class="content-container">
-  <div class="flex flex-col md:flex-row gap-8">
-    <!-- 商品图片 -->
-    <div class="image-container">
-      <img :src="product.image" alt="商品图片" class="product-image" loading="lazy">
-    </div>
-
-    <!-- 商品详情 -->
-    <div class="details-container">
-      <h1 class="product-name">{{ product.name }}</h1>
-      <p class="product-description">{{ product.description }}</p>
-      <p class="extended-description">{{ product.extendedDescription }}</p>
-      <p class="price">价格: ￥{{ product.price }}</p>
-
-      <!-- 购买按钮 -->
-      <div class="button-container">
-        <el-button type="warning" class="buy-button" @click="addToCart">
-          加入购物车
-        </el-button>
-        <el-button type="danger" class="buy-now-button" @click="buyNow">
-          立即购买
-        </el-button>
+        <!-- 按钮 -->
+        <div class="button-container">
+          <el-button type="warning" class="buy-button" @click="addToCart">加入购物车</el-button>
+          <el-button type="danger" class="buy-now-button" @click="buyNow">立即购买</el-button>
+          <el-button type="primary" @click="openModal">选择商品类型</el-button>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- 模态框 -->
+  <div v-if="showModal" class="modal-overlay">
+    <div class="modal">
+      <h2>请选择商品类型</h2>
+      <div v-for="option in options" :key="option.value">
+        <label>
+          <input type="radio" v-model="selectedOptions" :value="option.value" />
+          {{ option.label }}
+        </label>
+      </div>
+
+      <div class="button-container">
+        <el-button type="danger" class="buy-button" @click="openPaymentModal">立即购买</el-button>
+        <el-button type="warning" class="buy-now-button" @click="closeModal">取消购买</el-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 选择支付方式的模态框 -->
+  <div v-if="showPaymentModal" class="modal-overlay">
+    <div class="modal">
+      <h2>请选择支付方式</h2>
+      <div v-for="option in payOptons" :key="option.value">
+        <label>
+          <input type="radio" v-model="selectedPayments" :value="option.value" />
+          {{ option.label }}
+        </label>
+      </div>
+
+      <div class="buttons">
+        <button @click="submitPayment" class="btn">确认支付</button>
+        <button @click="closePaymentModal" class="btn cancel">取消</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
+<!-- Vue 逻辑 -->
 <script src="js/product.js"></script>
 </body>
 </html>

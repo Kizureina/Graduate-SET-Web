@@ -20,7 +20,8 @@ public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     // 模拟用户数据库
-    private static final Map<String, String> USER_DB = new HashMap<>();
+    public static final Map<String, String> USER_DB = new HashMap<>();
+    public static String userNameLogin = "";
 
     static {
         USER_DB.put("admin", "123456");
@@ -41,6 +42,7 @@ public class LoginController {
             User loginUser = new User(username, password);
             // 使用Session存储登录信息
             session.setAttribute("user", loginUser.toString());
+            userNameLogin = loginUser.getUsername();
             logger.info(username + "登录成功");
         } else {
             response.put("status", "error");

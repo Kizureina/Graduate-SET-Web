@@ -64,6 +64,7 @@ const app = createApp({
     },
     data() {
         return {
+            username: "", // 存储用户名
             searchQuery: '',
             cart: [],
             product: products[getQueryParam("category")] || {
@@ -71,12 +72,40 @@ const app = createApp({
                 description: "未找到匹配的商品信息",
                 price: "N/A",
                 image: "https://www.helloimg.com/i/2025/02/16/67b1ad5d61fa4.png"
-            }
+            },
+            showModal: false,
+            selectedOptions: [],
+            options: [
+                { value: "color_black", label: "黑色" },
+                { value: "color_white", label: "白色" },
+                { value: "l", label: "L" },
+                { value: "xl", label: "XL" },
+                { value: "xxl", label: "XXL" },
+                { value: "xxxl", label: "XXXL" },
+            ],
+            showPaymentModal: false,
+            selectedPayment: "",
+            payOptons: [
+                {
+                    value: "wechat", label: "微信"
+                },
+                {
+                    value: "zhi", label: "支付宝"
+                },
+                {
+                    value: "bank", label: "银行卡"
+                }
+            ],
+            selectedPayments: ""
         };
+    },
+    mounted() {
+        this.fetchUsername();
     },
     methods: {
         searchProduct() {
             console.log('搜索:', this.searchQuery);
+            alert("搜索商品：" + this.searchQuery);
             // 执行搜索逻辑
         },
         addToCart() {
@@ -97,9 +126,71 @@ const app = createApp({
             //         console.error("请求失败", error);
             //     });
         },
+        openModal() {
+            this.showModal = true;
+        },
+        closeModal() {
+            this.showModal = false;
+            this.selectedOptions = [];
+        },
+
         goToCart() {
             alert('跳转到购物车');
             // 跳转到购物车页面的逻辑
+        },
+        openPaymentModal() {
+            this.showPaymentModal = true;
+            this.selectedPayment = true;
+        },
+        closePaymentModal() {
+            this.showPaymentModal = false;
+            this.selectedPayment = "";
+        },
+        async submitPayment() {
+            if (!this.selectedPayment) {
+                alert("请选择支付方式！");
+                return;
+            }
+
+            try {
+                let request = JSON.stringify(
+                    {
+                        paymentMethod: this.selectedPayments,
+                        productName: this.product.name,
+                        productType: this.selectedOptions,
+                        userName: this.username
+                    });
+                /*
+                * 注意此处交互请求的逻辑不可以对await和.then混用
+                * */
+                fetch("/api/pay", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: request
+                })
+                    .then(response => response.json())  // 解析 JSON
+                    .then(data => {
+                        alert("支付成功: " + JSON.stringify(data));
+                        this.closePaymentModal();
+                        this.closeModal();
+                    })
+                    .catch(error => console.error("支付请求失败:", error));
+                //console.log(request);
+
+            } catch (error) {
+                console.error("支付失败", error);
+            }
+        },
+        fetchUsername() {
+            fetch("/api/username")
+                .then(response => response.text()) // 假设 API 返回的是纯字符串
+                .then(data => {
+                    this.username = data;
+                    console.log("用户名" + this.username);
+                })
+                .catch(error => {
+                    console.error("获取用户名失败:", error);
+                });
         }
     }
 });
