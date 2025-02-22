@@ -1,34 +1,42 @@
 package com.example.setweb.dao;
 
+import java.math.BigDecimal;
+
 public class Bank {
-    String bankUsername;
-    Integer userCount;
+    private String username;
+    private BigDecimal balance;
 
-    public Bank(String bankUsername) {
-        this.bankUsername = bankUsername;
+    // 构造方法
+    public Bank() {}
+
+    public Bank(String username, BigDecimal balance) {
+        this.username = username;
+        this.balance = balance;
     }
 
-    public String getBankUsername() {
-        return bankUsername;
+    // Getter 和 Setter
+    public String getUsername() {
+        return username;
     }
 
-    public void setBankUsername(String bankUsername) {
-        this.bankUsername = bankUsername;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public Integer getUserCount() {
-        return userCount;
+    public BigDecimal getBalance() {
+        return balance;
     }
 
-    public void setUserCount(Integer userCount) {
-        this.userCount = userCount;
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 
     @Override
     public String toString() {
-        return "Bank{" +
-                "bankUsername='" + bankUsername + '\'' +
-                ", userCount=" + userCount +
+        return "BankUser{" +
+                "username='" + username + '\'' +
+                ", balance=" + balance +
                 '}';
     }
 }
+

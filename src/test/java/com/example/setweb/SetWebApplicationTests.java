@@ -1,10 +1,18 @@
 package com.example.setweb;
 
+import com.example.setweb.dao.Bank;
+import com.example.setweb.dao.Product;
+import com.example.setweb.mapper.BankMapper;
+import com.example.setweb.mapper.SellerMapper;
 import com.example.setweb.utils.DESUtil;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.crypto.SecretKey;
+import java.util.List;
 
 @SpringBootTest
 class SetWebApplicationTests {
@@ -31,4 +39,32 @@ class SetWebApplicationTests {
 		}
 	}
 
+//	@Test
+//	void sqlTest() throws IOException {
+//		SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder()
+//				.build(Resources.getResourceAsStream("mybatis-config.xml"));
+//
+//		try (SqlSession session = sqlSessionFactory.openSession()) {
+//			BankMapper bankMapper = session.getMapper(BankMapper.class);
+//			System.out.println(bankMapper.getAllUsers());
+//
+//			SellerMapper sellerMapper = session.getMapper(SellerMapper.class);
+//			System.out.println(sellerMapper.getAllProducts());
+//		}
+//	}
+//	@Autowired
+//	private SqlSessionFactory sqlSessionFactory;
+//
+//	@Test
+//	public void sqlTest() {
+//		try (SqlSession session = sqlSessionFactory.openSession()) {
+//			BankMapper bankMapper = session.getMapper(BankMapper.class);
+//			List<Bank> users = bankMapper.getAllUsers();
+//			System.out.println("Bank Users: " + users);
+//
+//			SellerMapper sellerMapper = session.getMapper(SellerMapper.class);
+//			List<Product> products = sellerMapper.getAllProducts();
+//			System.out.println("Seller Products: " + products);
+//		}
+//	}
 }
