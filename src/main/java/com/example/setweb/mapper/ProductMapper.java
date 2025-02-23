@@ -9,7 +9,7 @@ import java.util.List;
  * @author Yoruko
  */
 @Mapper
-public interface SellerMapper {
+public interface ProductMapper {
 
     @Select("SELECT * FROM products")
     List<Product> getAllProducts();

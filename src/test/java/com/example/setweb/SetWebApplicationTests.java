@@ -1,17 +1,21 @@
 package com.example.setweb;
 
 import com.example.setweb.dao.Bank;
-import com.example.setweb.dao.Product;
 import com.example.setweb.mapper.BankMapper;
-import com.example.setweb.mapper.SellerMapper;
+import com.example.setweb.service.BankService;
 import com.example.setweb.utils.DESUtil;
+import com.example.setweb.utils.HashUtil;
+import com.example.setweb.utils.RSASignature;
+import jakarta.annotation.Resource;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.crypto.SecretKey;
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.List;
 
 @SpringBootTest
@@ -38,33 +42,52 @@ class SetWebApplicationTests {
 			e.printStackTrace();
 		}
 	}
+	@Resource
+	private SqlSessionFactory sqlSessionFactory;
 
-//	@Test
-//	void sqlTest() throws IOException {
-//		SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder()
-//				.build(Resources.getResourceAsStream("mybatis-config.xml"));
-//
-//		try (SqlSession session = sqlSessionFactory.openSession()) {
-//			BankMapper bankMapper = session.getMapper(BankMapper.class);
-//			System.out.println(bankMapper.getAllUsers());
-//
-//			SellerMapper sellerMapper = session.getMapper(SellerMapper.class);
-//			System.out.println(sellerMapper.getAllProducts());
-//		}
-//	}
-//	@Autowired
-//	private SqlSessionFactory sqlSessionFactory;
-//
-//	@Test
-//	public void sqlTest() {
-//		try (SqlSession session = sqlSessionFactory.openSession()) {
-//			BankMapper bankMapper = session.getMapper(BankMapper.class);
-//			List<Bank> users = bankMapper.getAllUsers();
-//			System.out.println("Bank Users: " + users);
-//
-//			SellerMapper sellerMapper = session.getMapper(SellerMapper.class);
-//			List<Product> products = sellerMapper.getAllProducts();
-//			System.out.println("Seller Products: " + products);
-//		}
-//	}
+	@Test
+	public void sqlTest() {
+		try (SqlSession session = sqlSessionFactory.openSession()) {
+			BankMapper bankMapper = session.getMapper(BankMapper.class);
+			List<Bank> users = bankMapper.getAllUsers();
+			System.out.println("Bank Users: " + users);
+			BankService bankService = new BankService(bankMapper);
+			List<Bank> bankUsers = bankService.getAllUsers();
+			System.out.println(bankUsers);
+
+		}catch (Exception e){
+			System.out.println("error:" + e);
+		}
+	}
+
+	@Test
+	public void hashTest(){
+		String hashText = HashUtil.sha1("hello world!");
+		System.out.println(hashText);
+	}
+
+	@Test
+	public void RSATest(){
+		try {
+			// 1. 生成 RSA 密钥对
+			KeyPair keyPair = RSASignature.generateKeyPair();
+			PrivateKey privateKey = keyPair.getPrivate();
+			PublicKey publicKey = keyPair.getPublic();
+
+			// 2. 需要签名的消息
+			String message = "Hello, this is a secure message.";
+
+			// 3. 生成签名
+			String signature = RSASignature.sign(message, privateKey);
+			System.out.println("Digital Signature: " + signature);
+
+			// 4. 验证签名
+			boolean isVerified = RSASignature.verify(message, signature, publicKey);
+			System.out.println("Signature Verification: " + isVerified);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }
