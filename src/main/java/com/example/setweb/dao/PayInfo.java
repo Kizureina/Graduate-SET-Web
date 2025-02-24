@@ -4,12 +4,12 @@ package com.example.setweb.dao;
  * @author Yoruko
  */
 public class PayInfo {
-    private String paymentMethod;
     private String userName;
+    private String paymentMethod;
 
-    public PayInfo(String paymentMethod, String userName) {
-        this.paymentMethod = paymentMethod;
+    public PayInfo(String userName, String paymentMethod) {
         this.userName = userName;
+        this.paymentMethod = paymentMethod;
     }
 
     public String getPaymentMethod() {
@@ -31,8 +31,8 @@ public class PayInfo {
     @Override
     public String toString() {
         return "PayInfo{" +
-                "paymentMethod='" + paymentMethod + '\'' +
-                ", userName='" + userName + '\'' +
+                "userName='" + userName + '\'' +
+                ", paymentMethod='" + paymentMethod + '\'' +
                 '}';
     }
 }

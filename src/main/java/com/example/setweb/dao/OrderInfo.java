@@ -5,12 +5,10 @@ package com.example.setweb.dao;
  */
 public class OrderInfo {
     private String productName;
-    private String productId;
     private String productType;
 
-    public OrderInfo(String productName, String productId, String productType) {
+    public OrderInfo(String productName, String productType) {
         this.productName = productName;
-        this.productId = productId;
         this.productType =productType;
     }
 
@@ -22,13 +20,6 @@ public class OrderInfo {
         this.productName = productName;
     }
 
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
 
     public String getProductType() {
         return productType;
@@ -42,7 +33,6 @@ public class OrderInfo {
     public String toString() {
         return "OrderInfo{" +
                 "productName='" + productName + '\'' +
-                ", productId='" + productId + '\'' +
                 ", productType='" + productType + '\'' +
                 '}';
     }
