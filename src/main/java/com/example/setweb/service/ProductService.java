@@ -27,4 +27,12 @@ public class ProductService {
         return productMapper.getProductById(id);
     }
 
+    public Product insertProduct(int id, String productName){
+        Product product = new Product();
+        product.setProductId(id);
+        product.setProductName(productName);
+        productMapper.insertProduct(product);
+        return product;
+    }
+
 }

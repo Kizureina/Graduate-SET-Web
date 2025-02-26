@@ -1,15 +1,17 @@
 package com.example.setweb.dao;
 
+import java.math.BigDecimal;
+
 /**
  * @author Yoruko
  */
 public class OrderInfo {
     private String productName;
-    private String productType;
+    private BigDecimal price;
 
-    public OrderInfo(String productName, String productType) {
+    public OrderInfo(String productName, BigDecimal price) {
         this.productName = productName;
-        this.productType =productType;
+        this.price = price;
     }
 
     public String getProductName() {
@@ -21,19 +23,19 @@ public class OrderInfo {
     }
 
 
-    public String getProductType() {
-        return productType;
+    public BigDecimal getPrice() {
+        return price;
     }
 
-    public void setProductType(String productType) {
-        this.productType = productType;
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     @Override
     public String toString() {
         return "OrderInfo{" +
                 "productName='" + productName + '\'' +
-                ", productType='" + productType + '\'' +
+                ", price='" + price + '\'' +
                 '}';
     }
 }

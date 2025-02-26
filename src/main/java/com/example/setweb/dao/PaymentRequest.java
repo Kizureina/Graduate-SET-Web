@@ -1,12 +1,16 @@
 package com.example.setweb.dao;
 
+import org.springframework.context.annotation.Bean;
+
+import java.math.BigDecimal;
+
 /**
  * @author Yoruko
  */
 public class PaymentRequest {
     private String paymentMethod;
     private String productName;
-    private String productType;
+    private BigDecimal price;
     private String userName;
 
     public String getUserName() {
@@ -33,18 +37,18 @@ public class PaymentRequest {
         this.productName = productName;
     }
 
-    public String getProductType() {
-        return productType;
+    public BigDecimal getPrice() {
+        return price;
     }
 
-    public void setProductType(String productType) {
-        this.productType = productType;
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
-    public PaymentRequest(String paymentMethod, String productName, String productType, String userName) {
+    public PaymentRequest(String paymentMethod, String productName, BigDecimal price, String userName) {
         this.paymentMethod = paymentMethod;
         this.productName = productName;
-        this.productType = productType;
+        this.price = price;
         this.userName = userName;
     }
 
@@ -53,7 +57,7 @@ public class PaymentRequest {
         return "PaymentRequest{" +
                 "paymentMethod='" + paymentMethod + '\'' +
                 ", productName='" + productName + '\'' +
-                ", productType='" + productType + '\'' +
+                ", price='" + price + '\'' +
                 ", userName='" + userName + '\'' +
                 '}';
     }

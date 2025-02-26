@@ -12,6 +12,10 @@ public class PaymentResponse {
         this.status = status;
     }
 
+    public PaymentResponse() {
+
+    }
+
     public Integer getCode() {
         return code;
     }

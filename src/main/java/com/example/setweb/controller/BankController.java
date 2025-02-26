@@ -34,16 +34,16 @@ public class BankController {
     }
 
     @PostMapping("/user")
-    public String addUser(@RequestParam String username, @RequestParam BigDecimal balance) {
+    public Bank addUser(@RequestParam String username, @RequestParam BigDecimal balance) {
         bankService.addUser(username, balance);
         logger.info("添加用户" + username + "余额为" + balance);
-        return "User added!";
+        return bankService.getUserByUsername(username);
     }
 
     @PutMapping("/user/{username}")
-    public String updateBalance(@PathVariable String username, @RequestParam BigDecimal balance) {
+    public Bank updateBalance(@PathVariable String username, @RequestParam BigDecimal balance) {
         bankService.updateBalance(username, balance);
         logger.info("更新用户" + username + "余额更新为" + balance);
-        return "Balance updated!";
+        return bankService.getUserByUsername(username);
     }
 }
