@@ -138,8 +138,10 @@ const app = createApp({
                             let responseData = data;
                             if(responseData['code'] === 0){
                                 alert("支付成功！");
+                            }else if(responseData['code'] === 1){
+                                alert("支付失败！账户余额不足");
                             }else {
-                                alert("支付失败！" + responseData['status']);
+                                alert("支付失败！用户登录信息失效，请重新登录");
                             }
                             console.log(responseData);
 
@@ -162,6 +164,7 @@ const app = createApp({
             //         console.error("请求失败", error);
             //     });
         },
+
         openModal() {
             this.showModal = true;
         },
