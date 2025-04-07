@@ -140,9 +140,14 @@ const app = createApp({
                                 alert("支付成功！");
                             }else if(responseData['code'] === 1){
                                 alert("支付失败！账户余额不足");
-                            }else {
+                            }else if(responseData['code'] === 2){
                                 alert("支付失败！用户登录信息失效，请重新登录");
+                            }else if(responseData['code'] === 3){
+                                alert("银行校验用户请求数据失败！");
+                            }else {
+                                alert("商家校验用户请求数据失败！");
                             }
+
                             console.log(responseData);
 
                         })
