@@ -8,6 +8,7 @@ import com.example.setweb.service.PaymentService;
 import com.example.setweb.utils.RSASignature;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpSession;
+import org.bouncycastle.jcajce.provider.asymmetric.RSA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,8 +60,11 @@ public class PaymentController {
         // 获取公钥证书
         X509Certificate certificate = (X509Certificate) session.getAttribute("cert");
 
+        // 生成商家RSA密钥对
+        KeyPair merchant = RSASignature.generateKeyPair();
+
         // 最终发给商家的数据
-        String sendToMerchant = paymentService.sendToMerchant(secretKey, keyPair, certificate);
+        String sendToMerchant = paymentService.sendToMerchant(secretKey, merchant, certificate);
         logger.warn("发给商家的数据：" + sendToMerchant);
 
         // 商家验证数据
@@ -73,7 +77,7 @@ public class PaymentController {
         );
 
         // 银行验证数据
-        boolean flag = paymentService.bankVerify(privateKey);
+        boolean flag = paymentService.bankVerify(merchant.getPrivate());
 
         if(verify){
             logger.info("商家校验双重数字签名成功！");

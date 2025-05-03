@@ -7,11 +7,13 @@ import java.math.BigDecimal;
  */
 public class OrderInfo {
     private String productName;
-    private BigDecimal price;
+    private Integer count = 1;
 
-    public OrderInfo(String productName, BigDecimal price) {
+    private String options;
+
+    public OrderInfo(String productName, String options) {
         this.productName = productName;
-        this.price = price;
+        this.options = options;
     }
 
     public String getProductName() {
@@ -23,19 +25,28 @@ public class OrderInfo {
     }
 
 
-    public BigDecimal getPrice() {
-        return price;
+    public Integer getCount() {
+        return count;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public String getOptions() {
+        return options;
+    }
+
+    public void setOptions(String options) {
+        this.options = options;
     }
 
     @Override
     public String toString() {
         return "OrderInfo{" +
                 "productName='" + productName + '\'' +
-                ", price='" + price + '\'' +
+                ", count=" + count +
+                ", options='" + options + '\'' +
                 '}';
     }
 }

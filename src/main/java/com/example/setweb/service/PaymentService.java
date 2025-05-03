@@ -7,19 +7,16 @@ import com.example.setweb.utils.RSASignature;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import java.util.Base64;
 
 /**
@@ -46,11 +43,11 @@ public class PaymentService {
     }
 
     public void initService(PaymentRequest paymentRequest){
-        logger.info("用户信息为" + paymentRequest.getUserName() + paymentRequest.getProductName() + paymentRequest.getPrice() + paymentRequest.getPaymentMethod());
+        logger.info("用户信息为" + paymentRequest.getUserName() + paymentRequest.getProductName() + paymentRequest.getPrice() + paymentRequest.getPaymentMethod() + paymentRequest.getOptions());
         logger.info("完成PI和IO初始化");
         this.paymentRequest = paymentRequest;
-        this.payInfo = new PayInfo(paymentRequest.getUserName(), paymentRequest.getPaymentMethod());
-        this.orderInfo = new OrderInfo(paymentRequest.getProductName(), paymentRequest.getPrice());
+        this.payInfo = new PayInfo(paymentRequest.getUserName(), paymentRequest.getPaymentMethod(), paymentRequest.getPrice());
+        this.orderInfo = new OrderInfo(paymentRequest.getProductName(), paymentRequest.getOptions());
     }
 
     // 比较用户余额与商品价格
@@ -78,7 +75,7 @@ public class PaymentService {
         // 通过加全局锁实现线程安全地更新银行账户余额
         synchronized (lock) {
             BigDecimal balance = bankService.getUserByUsername(payInfo.getUserName()).getBalance();
-            BigDecimal nowBalance = balance.subtract(orderInfo.getPrice());
+            BigDecimal nowBalance = balance.subtract(payInfo.getPrice());
             bankService.updateBalance(payInfo.getUserName(), nowBalance);
             return nowBalance;
         }
@@ -128,7 +125,8 @@ public class PaymentService {
         // DES加密PI + 双重数字签名 + IOMD
         part1 = DESUtil.encrypt(this.getPayInfo().toString() + dualSignature + this.getOrderInfoMsgDigest(), secretKey);
 
-        // 数字信封传递DES对称密钥的RSA公钥加密，使用Base64编码密文
+        // 数字信封
+        // 传递DES对称密钥的RSA公钥加密，使用Base64编码密文
 //        byte[] encrypted = RSASignature.encrypt(secretKey.toString(), keyPair.getPublic()); 这种写法会遇到密钥长度问题
         byte[] encrypted = RSASignature.encrypt(secretKey.getEncoded(), keyPair.getPublic());
 

@@ -12,6 +12,25 @@ public class PaymentRequest {
     private String productName;
     private BigDecimal price;
     private String userName;
+    private String options;
+    private Integer count = 1;
+
+
+    public String getOptions() {
+        return options;
+    }
+
+    public void setOptions(String options) {
+        this.options = options;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
 
     public String getUserName() {
         return userName;
@@ -45,11 +64,12 @@ public class PaymentRequest {
         this.price = price;
     }
 
-    public PaymentRequest(String paymentMethod, String productName, BigDecimal price, String userName) {
+    public PaymentRequest(String paymentMethod, String productName, BigDecimal price, String userName, String options) {
         this.paymentMethod = paymentMethod;
         this.productName = productName;
         this.price = price;
         this.userName = userName;
+        this.options = options;
     }
 
     @Override
@@ -57,8 +77,10 @@ public class PaymentRequest {
         return "PaymentRequest{" +
                 "paymentMethod='" + paymentMethod + '\'' +
                 ", productName='" + productName + '\'' +
-                ", price='" + price + '\'' +
+                ", price=" + price +
                 ", userName='" + userName + '\'' +
+                ", options='" + options + '\'' +
+                ", count=" + count +
                 '}';
     }
 }

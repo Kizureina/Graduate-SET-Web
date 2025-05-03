@@ -108,10 +108,10 @@ const app = createApp({
             alert("搜索商品：" + this.searchQuery);
             // 执行搜索逻辑
         },
-        addToCart() {
-            this.cart.push(this.product);
-            console.log('已加入购物车:', this.product.name);
-        },
+        // addToCart() {
+        //     this.cart.push(this.product);
+        //     console.log('已加入购物车:', this.product.name);
+        // },
         buyNow() {
             // alert('立即购买: ' + this.product.name + "，确认吗?", "确认", "取消");
             const userConfirmed = confirm('立即购买: ' + this.product.name + "，确认吗?");
@@ -124,7 +124,7 @@ const app = createApp({
                         {
                             paymentMethod: "bank",
                             productName: getQueryParam("category"),
-                            // productType: this.selectedOptions,
+                            productType: this.selectedOptions,
                             price: products[getQueryParam("category")].price,
                             userName: this.username
                         });
@@ -178,10 +178,31 @@ const app = createApp({
             this.selectedOptions = [];
         },
 
-        goToCart() {
-            alert('跳转到购物车');
-            // 跳转到购物车页面的逻辑
+        // goToCart() {
+        //     alert('跳转到购物车');
+        //     // 跳转到购物车页面的逻辑
+        // },
+
+        addToCart(product) {
+            axios.post('/api/cart/add', {
+                productId: product.id,
+                productName: product.name,
+                price: product.price,
+                quantity: 1
+            }).then(() => {
+                alert('已添加到购物车');
+            }).catch(err => {
+                console.error(err);
+                alert('添加失败');
+            });
         },
+
+
+        goToCart() {
+            // this.$router.push('/cart'); // 或
+            window.location.href = "/cart.html";
+        },
+
         openPaymentModal() {
             this.showPaymentModal = true;
             this.selectedPayment = true;
