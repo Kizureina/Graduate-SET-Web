@@ -46,3 +46,8 @@ print_tree() {
 echo "$DIR"
 print_tree "" "$DIR"
 
+
+# 统计文件中代码行数
+
+# find . -type f -exec wc -l {} +
+

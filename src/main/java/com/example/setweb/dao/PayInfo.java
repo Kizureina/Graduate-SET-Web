@@ -16,6 +16,10 @@ public class PayInfo {
         this.price = price;
     }
 
+    public PayInfo(){
+
+    }
+
     public String getPaymentMethod() {
         return paymentMethod;
     }

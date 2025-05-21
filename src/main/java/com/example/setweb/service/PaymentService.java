@@ -18,6 +18,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Yoruko
@@ -68,18 +70,33 @@ public class PaymentService {
         return balance.compareTo(price) > 0;
     }
 
-    private final Object lock = new Object();
+//    private final Object lock = new Object();
     // 全局锁（或改成基于用户名的锁池）
+//
+//    public BigDecimal updateUserBalance() {
+//        // 通过加全局锁实现线程安全地更新银行账户余额
+//        synchronized (lock) {
+//            BigDecimal balance = bankService.getUserByUsername(payInfo.getUserName()).getBalance();
+//            BigDecimal nowBalance = balance.subtract(payInfo.getPrice());
+//            bankService.updateBalance(payInfo.getUserName(), nowBalance);
+//            return nowBalance;
+//        }
+//    }
+    private final ConcurrentMap<String, Object> userLocks = new ConcurrentHashMap<>();
 
-    public BigDecimal updateUserBalance() {
-        // 通过加全局锁实现线程安全地更新银行账户余额
-        synchronized (lock) {
-            BigDecimal balance = bankService.getUserByUsername(payInfo.getUserName()).getBalance();
+
+    public BigDecimal updateUserBalance(PayInfo payInfo) {
+        String username = payInfo.getUserName();
+        Object userLock = userLocks.computeIfAbsent(username, k -> new Object());
+
+        synchronized (userLock) {
+            BigDecimal balance = bankService.getUserByUsername(username).getBalance();
             BigDecimal nowBalance = balance.subtract(payInfo.getPrice());
-            bankService.updateBalance(payInfo.getUserName(), nowBalance);
+            bankService.updateBalance(username, nowBalance);
             return nowBalance;
         }
     }
+
 
     public SecretKey generateUserKey() throws Exception {
         logger.info("生成用户" + paymentRequest.getUserName() + "对称加密算法DES密钥");

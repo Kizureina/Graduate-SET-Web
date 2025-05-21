@@ -15,6 +15,10 @@ public class PaymentRequest {
     private String options;
     private Integer count = 1;
 
+    public PaymentRequest() {
+
+    }
+
 
     public String getOptions() {
         return options;

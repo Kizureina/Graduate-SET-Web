@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>电商平台 - 首页</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+  <style>
+    /* 示例样式 */
+    .header, .search-bar, .cart, .categories, .grid-container,
+    .category-card, .category-title, .category-image, .category-description,
+    .category-button, .search-button, .cart-button, .nav-wrapper, .main-content,
+    .product-grid, .product-wrapper, .product-box, .product-image, .product-name,
+    .product-desc, .product-btn, .flex-container, .align-center, .spacer {
+      /* 占位样式 */
+    }
+  </style>
+</head>
+
+<body>
+<div id="app">
+  <!-- 顶部导航栏 -->
+  <div class="header nav-wrapper">
+    <h2 class="header-title">安全电子商务平台</h2>
+    <input type="text" id="searchInput" placeholder="搜索商品..." class="search-bar input-text">
+    <button id="searchBtn" class="search-button btn-primary">搜索</button>
+
+    <div class="cart">
+      <button class="cart-button btn-warning" id="cartBtn">购物车 (<span id="cartCount">0</span>)</button>
+    </div>
+  </div>
+
+  <!-- 分类标题 -->
+  <div class="categories section-title align-center">
+    精选推荐 · 热门分类 · 优惠专区
+  </div>
+
+  <!-- 商品分类展示 -->
+  <div class="grid-container main-content flex-container">
+    <!-- 分类卡片将在 JavaScript 中插入 -->
+  </div>
+</div>
+
+<script>
+  // 模拟分类数据
+  const categories = [
+    {
+      title: "电子产品",
+      image: "images/electronics.jpg",
+      description: "最新的电子设备和配件。",
+      key: "electronics"
+    },
+    {
+      title: "家居用品",
+      image: "images/home.jpg",
+      description: "打造温馨家居生活。",
+      key: "home"
+    },
+    {
+      title: "服饰配件",
+      image: "images/clothes.jpg",
+      description: "时尚潮流尽在掌握。",
+      key: "clothing"
+    }
+  ];
+
+  // 初始化购物车
+  let cart = [];
+
+  // 搜索功能
+  document.getElementById("searchBtn").addEventListener("click", () => {
+    const query = document.getElementById("searchInput").value.trim();
+    if (query) {
+      alert("搜索商品：" + query);
+    } else {
+      alert("请输入搜索内容");
+    }
+  });
+
+  // 渲染分类卡片
+  const container = document.querySelector(".grid-container");
+  categories.forEach(category => {
+    const card = document.createElement("div");
+    card.className = "category-card product-wrapper";
+
+    card.innerHTML = `
+      <h3 class="category-title">${category.title}</h3>
+      <img src="${category.image}" alt="分类图片" class="category-image product-image">
+      <p class="category-description product-desc">${category.description}</p>
+      <button class="category-button product-btn btn-success" data-key="${category.key}">查看</button>
+    `;
+    container.appendChild(card);
+  });
+
+  // 查看分类点击事件
+  container.addEventListener("click", function (e) {
+    if (e.target.classList.contains("category-button")) {
+      const key = e.target.getAttribute("data-key");
+      alert("查看分类: " + key);
+    }
+  });
+
+  // 模拟添加商品到购物车（此处省略实际商品逻辑）
+  document.getElementById("cartBtn").addEventListener("click", () => {
+    alert("前往购物车，共有 " + cart.length + " 件商品");
+  });
+</script>
+</body>
+</html>

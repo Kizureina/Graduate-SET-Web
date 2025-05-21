@@ -1,16 +1,18 @@
 package com.example.setweb.controller;
 
 import com.example.setweb.dao.Bank;
+import com.example.setweb.dao.PayInfo;
 import com.example.setweb.dao.PaymentRequest;
 import com.example.setweb.dao.PaymentResponse;
 import com.example.setweb.service.BankService;
 import com.example.setweb.service.PaymentService;
+import com.example.setweb.utils.BalanceUpdateExecutor;
 import com.example.setweb.utils.RSASignature;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpSession;
-import org.bouncycastle.jcajce.provider.asymmetric.RSA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,7 @@ import java.math.BigDecimal;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.Future;
 
 /**
  * @author Yoruko
@@ -34,6 +37,10 @@ public class PaymentController {
     @Resource
     private BankService bankService;
     private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
+
+    @Autowired
+    private final BalanceUpdateExecutor balanceUpdateExecutor = new BalanceUpdateExecutor(paymentService, 10);
+    // 线程池大小为10
 
     @PostMapping("/pay")
     public PaymentResponse processPayment(@RequestBody PaymentRequest request, HttpSession session) throws Exception {
@@ -93,26 +100,64 @@ public class PaymentController {
 
         PaymentResponse paymentResponse = new PaymentResponse();
 
-        try{
-            if(paymentService.checkAccountBalance(request.getUserName(), request.getPrice()) && verify && flag){
+        try {
+            if (paymentService.checkAccountBalance(request.getUserName(), request.getPrice()) && verify && flag) {
                 paymentResponse.setCode(0);
                 paymentResponse.setStatus("success");
 
-                // 更新用户余额
-                BigDecimal nowBalance = paymentService.updateUserBalance();
-                logger.info("当前余额为" + nowBalance);
-            }else {
+                // 准备 PayInfo 并封装为异步任务
+                PayInfo payInfo = new PayInfo();
+                payInfo.setUserName(request.getUserName());
+                payInfo.setPrice(request.getPrice());
+
+                // 异步更新余额（使用线程池）
+                Future<BigDecimal> future = balanceUpdateExecutor.submitSingle(payInfo);
+
+                BigDecimal nowBalance = future.get();
+                // 可选择放入另一个线程处理，避免阻塞主线程
+
+                logger.info("当前余额为 " + nowBalance);
+            } else {
                 paymentResponse.setCode(1);
                 paymentResponse.setStatus("balance of user's account is not enough!");
 
                 Bank user = bankService.getUserByUsername(request.getUserName());
-                logger.warn("用户余额不足，当前余额为" + user.getBalance());
+                logger.warn("用户余额不足，当前余额为 " + user.getBalance());
             }
-        }catch (IllegalArgumentException illegalArgumentException){
-            // 处理用户未登录异常
+        } catch (IllegalArgumentException illegalArgumentException) {
             paymentResponse.setCode(2);
             paymentResponse.setStatus("null user!");
+        } catch (Exception e) {
+            logger.error("余额更新出错", e);
+            paymentResponse.setCode(3);
+            paymentResponse.setStatus("balance update failed!");
         }
+
+
+
+//        单线程写法！
+//        PaymentResponse paymentResponse = new PaymentResponse();
+//
+//        try{
+//            if(paymentService.checkAccountBalance(request.getUserName(), request.getPrice()) && verify && flag){
+//                paymentResponse.setCode(0);
+//                paymentResponse.setStatus("success");
+//
+//                // 更新用户余额
+//                BigDecimal nowBalance = paymentService.updateUserBalance();
+//                logger.info("当前余额为" + nowBalance);
+//            }else {
+//                paymentResponse.setCode(1);
+//                paymentResponse.setStatus("balance of user's account is not enough!");
+//
+//                Bank user = bankService.getUserByUsername(request.getUserName());
+//                logger.warn("用户余额不足，当前余额为" + user.getBalance());
+//            }
+//        }catch (IllegalArgumentException illegalArgumentException){
+//            // 处理用户未登录异常
+//            paymentResponse.setCode(2);
+//            paymentResponse.setStatus("null user!");
+//        }
 
         if(!verify){
             paymentResponse.setCode(4);

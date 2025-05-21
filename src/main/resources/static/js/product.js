@@ -124,7 +124,7 @@ const app = createApp({
                         {
                             paymentMethod: "bank",
                             productName: getQueryParam("category"),
-                            productType: this.selectedOptions,
+                            productType: "white",
                             price: products[getQueryParam("category")].price,
                             userName: this.username
                         });
@@ -217,42 +217,86 @@ const app = createApp({
                 return;
             }
 
-            try {
-                let request = JSON.stringify(
-                    {
-                        paymentMethod: this.selectedPayments,
-                        productName: getQueryParam("category"),
-                        // productType: this.selectedOptions,
-                        price: products[getQueryParam("category")].price,
-                        userName: this.username
-                    });
-                /*
-                * 注意此处交互请求的逻辑不可以对await和.then混用
-                * */
-                fetch("/api/pay", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: request
-                })
-                    .then(response => response.json())  // 解析 JSON
-                    .then(data => {
-                        let responseData = JSON.stringify(data);
-                        if(!responseData['code']){
-                            alert("支付成功！");
-                        }else {
-                            alert("支付失败，请检查你的余额!")
-                        }
-                        console.log(responseData);
-
-                        this.closePaymentModal();
-                        this.closeModal();
+            if (userConfirmed) {
+                console.log("用户点击了确定，继续执行代码...");
+                // 执行立即购买逻辑
+                try {
+                    let request = JSON.stringify(
+                        {
+                            paymentMethod: this.selectedPayment,
+                            productName: getQueryParam("category"),
+                            productType: this.selectedOptions,
+                            price: products[getQueryParam("category")].price,
+                            userName: this.username
+                        });
+                    fetch("/api/pay", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: request
                     })
-                    .catch(error => console.error("支付请求失败:", error));
-                console.log(request);
+                        .then(response => response.json())
+                        .then(data => {
+                            let responseData = data;
+                            if(responseData['code'] === 0){
+                                alert("支付成功！");
+                            }else if(responseData['code'] === 1){
+                                alert("支付失败！账户余额不足");
+                            }else if(responseData['code'] === 2){
+                                alert("支付失败！用户登录信息失效，请重新登录");
+                            }else if(responseData['code'] === 3){
+                                alert("银行校验用户请求数据失败！");
+                            }else {
+                                alert("商家校验用户请求数据失败！");
+                            }
 
-            } catch (error) {
-                console.error("支付失败", error);
+                            console.log(responseData);
+
+                        })
+                        .catch(error => console.error("支付请求失败:", error));
+                    console.log(JSON.parse(request));
+
+                } catch (error) {
+                    console.error("支付失败", error);
+                }
             }
+
+
+            // try {
+            //     let request = JSON.stringify(
+            //         {
+            //             paymentMethod: this.selectedPayments,
+            //             productName: getQueryParam("category"),
+            //             // productType: this.selectedOptions,
+            //             price: products[getQueryParam("category")].price,
+            //             userName: this.username
+            //         });
+            //     /*
+            //     * 注意此处交互请求的逻辑不可以对await和.then混用
+            //     * */
+            //     fetch("/api/pay", {
+            //         method: "POST",
+            //         headers: { "Content-Type": "application/json" },
+            //         body: request
+            //     })
+            //         .then(response => response.json())  // 解析 JSON
+            //         .then(data => {
+            //             let responseData = JSON.stringify(data);
+            //             if(!responseData['code']){
+            //                 alert("支付成功！");
+            //             }else {
+            //                 alert("支付失败，请检查你的余额!")
+            //             }
+            //             console.log(responseData);
+            //
+            //             this.closePaymentModal();
+            //             this.closeModal();
+            //         })
+            //         .catch(error => console.error("支付请求失败:", error));
+            //     console.log(request);
+            //
+            // } catch (error) {
+            //     console.error("支付失败", error);
+            // }
         },
         fetchUsername() {
             fetch("/api/username")

@@ -1,0 +1,264 @@
+/* 通用样式 */
+body {
+    margin: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color: #f5f5f5;
+}
+
+h2, h3 {
+    margin: 0;
+    padding: 0;
+}
+
+/* Header 部分 */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #409EFF;
+    padding: 20px;
+    color: white;
+}
+
+.nav-wrapper {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 搜索框和按钮 */
+.search-bar {
+    flex-grow: 1;
+    max-width: 300px;
+    margin: 0 10px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.input-text:focus {
+    border-color: #409EFF;
+    outline: none;
+}
+
+.search-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #67C23A;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+    background-color: #5daf34;
+}
+
+.btn-primary {
+    font-weight: bold;
+}
+
+/* 购物车部分 */
+.cart {
+    margin-left: 10px;
+}
+
+.cart-button {
+    background-color: #E6A23C;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-warning:hover {
+    background-color: #cf922f;
+}
+
+/* 分类标题 */
+.categories {
+    background-color: white;
+    padding: 16px;
+    font-size: 18px;
+    border-bottom: 1px solid #ddd;
+}
+
+.section-title {
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.align-center {
+    text-align: center;
+}
+
+/* 主内容 */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    padding: 30px;
+}
+
+.main-content {
+    margin: 20px auto;
+}
+
+/* 分类卡片 */
+.category-card {
+    background-color: white;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    transition: transform 0.2s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.product-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+/* 分类标题 */
+.category-title {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* 图片 */
+.category-image,
+.product-image {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* 描述文字 */
+.category-description,
+.product-desc {
+    font-size: 14px;
+    color: #666;
+    margin: 12px 0;
+}
+
+/* 查看按钮 */
+.category-button,
+.product-btn {
+    background-color: #67C23A;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.category-button:hover {
+    background-color: #5daf34;
+}
+
+.btn-success {
+    font-weight: bold;
+}
+
+/* Flex 工具类 */
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* 额外装饰性样式 */
+.product-box {
+    padding: 12px;
+    background-color: #fafafa;
+    border: 1px dashed #ccc;
+}
+
+.product-name {
+    font-weight: bold;
+    color: #222;
+}
+
+.spacer {
+    height: 20px;
+}
+
+/* 媒体查询 */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .search-bar {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .grid-container {
+        padding: 10px;
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 动画效果 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.category-card {
+    animation: fadeInUp 0.5s ease-in-out;
+}
+
+/* 伪类和伪元素 */
+.category-button::after {
+    content: ' →';
+    font-weight: normal;
+    font-size: 12px;
+}
+
+.category-button:active {
+    transform: scale(0.95);
+}
+
+input::placeholder {
+    color: #aaa;
+}
+
+button:focus {
+    outline: 2px solid #409EFF;
+}
+
+/* 暗黑模式示例（可选） */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #1e1e1e;
+        color: #ccc;
+    }
+
+    .category-card {
+        background-color: #2a2a2a;
+        border-color: #444;
+    }
+
+    .search-bar,
+    .input-text {
+        background-color: #333;
+        color: #eee;
+        border-color: #555;
+    }
+}
